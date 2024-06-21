@@ -1,0 +1,9 @@
+<% if @error_message.present? %>
+  <%= render('spree/shared/modal_toggle', id: "#newsletter-error-popup") { j render 'spree/shared/newsletter_error_modal', error_message: @error_message } %>
+<% else %>
+  <%= render('spree/shared/modal_toggle', id: "#manage-newsletter-popup") { j render 'spree/shared/popup_manage_newsletter'} %>
+<% end %>
+
+$(".newsletter-sign-up-form").each(function() {
+  this.reset();
+})

@@ -1,0 +1,110 @@
+<% param_prefix = "payment_source[#{payment_method.id}]" %>
+<div class="well clearfix">
+  <p class="field">
+    <%= text_field_tag "#{param_prefix}[name]", "#{@order.bill_address_firstname} #{@order.bill_address_lastname}", { id: "name_on_card_#{payment_method.id}", class: 'spree-flat-input', placeholder: Spree.t(:name_on_card)} %>
+  </p>
+  <div class="form-control required cardNumber spree-flat-input">
+    <div id="card-element">
+      <!-- a Stripe Element will be inserted here. -->
+    </div>
+  </div>
+  <!-- Used to display form errors -->
+  <div id="card-errors" role="alert"></div>
+</div>
+
+<script type="text/javascript" src="https://js.stripe.com/v3/"></script>
+
+<script>
+  var stripeElements = Stripe("<%= payment_method.preferred_publishable_key %>");
+  var elements = stripeElements.elements();
+  var spreeFlatInputStyle = getComputedStyle(document.querySelector('input.spree-flat-input'));
+
+  var card = elements.create('card', {
+    iconStyle: 'solid',
+    hidePostalCode: true,
+    style: {
+      base: {
+        color: spreeFlatInputStyle['color'],
+        iconColor: spreeFlatInputStyle['color'],
+        lineHeight: spreeFlatInputStyle['line-height'],
+        fontWeight: spreeFlatInputStyle['font-weight'],
+        fontFamily: spreeFlatInputStyle['font-family'],
+        fontSize: spreeFlatInputStyle['font-size'],
+
+        '::placeholder': {
+          color: '#757575',
+          fontWeight: 300,
+          textTransform: 'uppercase'
+        },
+      },
+      invalid: {
+        iconColor: '#e85746',
+        color: '#e85746',
+      }
+    },
+    classes: {
+      focus: 'is-focused',
+      empty: 'is-empty',
+    },
+  });
+
+  window.addEventListener('DOMContentLoaded', function () {
+    card.mount('#card-element');
+
+    card.on('ready', function () {
+      Spree.stripeElementsPaymentMethod = $('#payment_method_' + <%= payment_method.id %>);
+      Spree.stripeElementsPaymentMethod.prepend("<div id='stripeElementsError' class='errorExplanation alert alert-danger' style='display:none'></div>");
+      var form = document.getElementById('checkout_form_payment');
+
+      form.addEventListener('submit', function(e) {
+        if (Spree.stripeElementsPaymentMethod.is(':visible')) {
+          $('#stripeElementsError').hide();
+          e.preventDefault();
+          createStripeElementsToken();
+        }
+      });
+      card.addEventListener('change', function(event) {
+        if (!event.error) {
+          $(form).find('input[type="submit"]').prop('disabled', false)
+        }
+      });
+    });
+  });
+
+  function addCreditCardFieldToForm(form, name, value) {
+    var hiddenInput = document.createElement('input');
+
+    hiddenInput.setAttribute('type', 'hidden');
+    hiddenInput.setAttribute('name', name);
+    hiddenInput.setAttribute('value', value);
+    form.appendChild(hiddenInput);
+  };
+
+  function stripeElementsTokenHandler(token) {
+    var form = document.getElementById('checkout_form_payment');
+    addCreditCardFieldToForm(form, '<%= param_prefix %>[gateway_payment_profile_id]', token.id)
+    addCreditCardFieldToForm(form, '<%= param_prefix %>[number]', token.card.last4)
+    addCreditCardFieldToForm(form, '<%= param_prefix %>[month]', token.card.exp_month)
+    addCreditCardFieldToForm(form, '<%= param_prefix %>[year]', token.card.exp_year)
+    form.submit();
+  };
+
+  function createStripeElementsToken() {
+    stripeElements.createToken(card, Spree.stripeAdditionalInfo).then(function (result) {
+      if (result.error) {
+        // Inform the user if there was an error
+        var errorElement = document.getElementById('card-errors');
+
+        $('#stripeElementsError').html(result.error.message);
+        $('#stripeElementsError').show()
+        Spree.enableSave();
+      } else {
+        stripeElementsTokenHandler(result.token);
+      }
+    });
+  };
+
+</script>
+
+<%= render 'spree/checkout/payment/stripe_additional_info' %>
+

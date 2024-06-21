@@ -1,0 +1,33 @@
+height: 750
+toolbar:
+  - undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help
+  - image # Add the 'image' button to the toolbar
+plugins:
+  - advlist autolink lists link image charmap print preview anchor
+  - searchreplace visualblocks code fullscreen
+  - insertdatetime media table paste code help wordcount
+file_picker_types: 'image'
+automatic_uploads: true
+
+file_picker_callback: |
+  function (callback, value, meta) {
+    if (meta.filetype === 'image') {
+      var input = document.createElement('input');
+      input.setAttribute('type', 'file');
+      input.setAttribute('accept', 'image/*');
+      input.onchange = function () {
+        var file = this.files[0];
+        var reader = new FileReader();
+        reader.onload = function () {
+          var img = new Image();
+          img.src = reader.result;
+          callback(reader.result, { alt: file.name });
+        };
+        reader.readAsDataURL(file);
+      };
+      input.click();
+    }
+  }
+image_class_list:
+ - { title: 'Responsive', value: 'img-fluid' }
+

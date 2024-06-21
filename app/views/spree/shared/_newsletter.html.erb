@@ -1,0 +1,38 @@
+<% id = 'newsletter-form-sign-up' %>
+<%= form_with url: newsletter_create_profile_path, method: :post, remote: true, id: "#{id}", class: 'newsletter-sign-up-form' do |f| %>
+  <div class="text-left">
+    <div class="col-12">
+      <%= f.email_field :email, class: "form-control p-4", required: :required, placeholder: 'Enter your email', id: "#{id}-email" %>
+    </div>
+    <div class="row mt-3 px-2">
+      <div class="col-sm-12 <%= is_footer ? " col-lg-6 col-md-6 " : 'col-12' %>">
+        <div>
+          <%= f.check_box :wine_lover, class: "m-1", id: "#{id}-wine-lover" %>
+          <%= f.label :wine_lover, Spree.t(:wine_lover), for: "#{id}-wine-lover" %>        
+        </div>
+        <div>
+          <%= f.check_box :industry_trade, class: "m-1", id: "#{id}-industry-trade" %>
+          <%= f.label :industry_trade, Spree.t(:industry_trade), for: "#{id}-industry-trade" %>    
+        </div>
+        <div>
+          <%= f.check_box :importer_distributor, class: "m-1", id: "#{id}-importer-distributor" %>
+          <%= f.label :importer_distributor, Spree.t(:importer_distributor), for: "#{id}-importer-distributor" %>
+        </div>
+      </div>
+
+      <div class="col-sm-12 <%= is_footer ? " col-lg-6 col-md-6 " : 'col-12' %>">
+        <div>
+          <%= f.check_box :grower_maker, class: "m-1", id: "#{id}-grower-maker" %>
+          <%= f.label :grower_maker, Spree.t(:grower_maker), for: "#{id}-grower-maker" %>        
+        </div>
+        <div>
+          <%= f.check_box :press, class: "m-1", id: "#{id}-press" %>
+          <%= f.label :press, Spree.t(:press), for: "#{id}-press" %>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 my-4" style="width: 8rem;">
+      <%= f.submit Spree.t(:sign_up), class:"btn btn-primary btn-sm" %>
+    </div>
+  </div>
+<% end %>

@@ -1,0 +1,29 @@
+<!-- Modal -->
+<div class="modal fade" id="manage-newsletter-popup" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header border-bottom-0">
+        <h5 class="modal-title" id="staticBackdropLabel">Newsletter</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <h5><%= @response[:message] %></h5> 
+        <% if @response[:status] == :success %>
+          <p> <%= Spree.t(:manage_prefeference, scope: :klaviyo) %> </p>
+        <% end %>
+        <div class="text-center row justify-content-center p-4">
+          <% if @response[:status] == :success %>
+          <div class="col-lg-3 col-sm-12">
+            <%= link_to 'Great idea', newsletter_unsubscribe_path(email: @response[:email]), class: 'btn btn-sm btn-primary' %>
+          </div>
+          <% end %>
+          <div class="col-lg-3 col-sm-12 mt-lg-0 mt-3">
+            <%= link_to 'Not now', '#', class: 'btn btn-sm btn-outline-primary h-100 pt-2', data: { dismiss: "modal" } %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

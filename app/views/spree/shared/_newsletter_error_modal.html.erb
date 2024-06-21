@@ -1,0 +1,21 @@
+<!-- Modal -->
+<div class="modal fade" id="newsletter-error-popup" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header border-bottom-0">
+        <h5 class="modal-title" id="staticBackdropLabel">Newsletter</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-danger mt-0" role="alert">
+          <%= error_message %>
+        </div>
+        <div class="col-sm-12 mt-lg-0 mt-3 text-right">
+          <%= link_to 'Close', '#', class: 'btn btn-sm btn-outline-primary w-25 h-100 pt-2', data: { dismiss: "modal" } %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
